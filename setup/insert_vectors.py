@@ -2,7 +2,7 @@ import os
 import httpx
 import csv
 from pinecone import Pinecone, ServerlessSpec
-from langchain_openai import AzureOpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from pathlib import Path
 from urllib3 import disable_warnings
 from urllib3.exceptions import InsecureRequestWarning
@@ -25,15 +25,10 @@ if not pc.has_index(index_name):
         )
     )
 
-params = {
-    "azure_endpoint": os.getenv("AZURE_ENDPOINT"),
-    "azure_deployment": os.getenv("AZURE_EMBED_DEPLOYMENT"),
-    "api_version": os.getenv("EMBED_API_VERSION"),
-    "api_key": os.getenv("AZURE_API_KEY"),
-    "timeout": 60,
-    "http_client": httpx.Client(verify=False),
-}
-client = AzureOpenAIEmbeddings(**params)
+client = OpenAIEmbeddings(
+    model="text-embedding-ada-002",
+    api_version="2024-10-21"
+)
 
 # embeds = client.embed_documents(
 #     [
