@@ -1,5 +1,7 @@
-# from python 3.13 chainguard image
-FROM cgr.dev/chainguard/python:3.13-dev AS dev
+# get production image
+FROM chainguard/python:3.13
+
+RUN pip install uv
 
 WORKDIR /app
 
@@ -7,21 +9,10 @@ RUN python -m venv .venv
 
 ENV PATH=/app/.venv/bin:$PATH
 
-COPY uv.lock /app/
-COPY pyproject.toml /app/
+COPY . /app/
 
 # run uv sync
 RUN uv sync --no-dev --frozen
-
-# get production image
-FROM cgr.dev/chainguard/python:3.13
-
-WORKDIR /app
-
-COPY . /app/
-COPY --from=dev /app/.venv /app/.venv
-
-ENV PATH=/app/.venv/bin:$PATH
 
 EXPOSE 2024
 
