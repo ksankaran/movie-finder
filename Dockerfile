@@ -1,5 +1,5 @@
 # from python 3.13 chainguard image
-FROM chainguard/python:3.13-dev AS dev
+FROM cgr.dev/chainguard/python:3.13-dev AS dev
 
 WORKDIR /app
 
@@ -14,7 +14,7 @@ COPY pyproject.toml /app/
 RUN uv sync --no-dev --frozen
 
 # get production image
-FROM chainguard/python:3.13
+FROM cgr.dev/chainguard/python:3.13
 
 WORKDIR /app
 
