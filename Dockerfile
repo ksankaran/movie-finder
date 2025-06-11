@@ -1,5 +1,5 @@
 # from python 3.13 chainguard image
-FROM ghcr.io/chainguard-dev/python:3.13 AS dev
+FROM chainguard/python:3.13-dev AS dev
 
 WORKDIR /app
 
@@ -8,13 +8,13 @@ RUN python -m venv .venv
 ENV PATH=/app/.venv/bin:$PATH
 
 COPY uv.lock /app/
-COPY project.toml /app/
+COPY pyproject.toml /app/
 
 # run uv sync
 RUN uv sync --no-dev --frozen
 
 # get production image
-FROM ghcr.io/chainguard/python:3.13
+FROM chainguard/python:3.13
 
 WORKDIR /app
 
