@@ -16,4 +16,4 @@ RUN uv sync --no-dev --frozen
 
 EXPOSE 2024
 
-CMD [ "langgraph", "dev" ]
+CMD [ "langgraph", "dev", "--no-browser", "--no-reload", "--host", "0.0.0.0" ]
