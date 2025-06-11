@@ -26,7 +26,7 @@ def search_movies_using_vector(query: str) -> str:
     embeddings = client.embed_query(query)
     results = index.query(
         vector=embeddings,
-        top_k=10,
+        top_k=20,
         include_values=False,
         include_metadata=True
     )

@@ -1,0 +1,28 @@
+# from python 3.13 chainguard image
+FROM ghcr.io/chainguard-dev/python:3.13 AS dev
+
+WORKDIR /app
+
+RUN python -m venv .venv
+
+ENV PATH=/app/.venv/bin:$PATH
+
+COPY uv.lock /app/
+COPY project.toml /app/
+
+# run uv sync
+RUN uv sync --no-dev --frozen
+
+# get production image
+FROM ghcr.io/chainguard/python:3.13
+
+WORKDIR /app
+
+COPY . /app/
+COPY --from=dev /app/.venv /app/.venv
+
+ENV PATH=/app/.venv/bin:$PATH
+
+EXPOSE 2024
+
+CMD [ "langgraph", "dev" ]
