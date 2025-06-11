@@ -1,5 +1,5 @@
 # get production image
-FROM chainguard/python:3.13
+FROM python:3.13-slim
 
 RUN pip install uv
 
