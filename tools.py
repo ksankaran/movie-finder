@@ -1,11 +1,9 @@
-import httpx
-import os
 from typing import Any
 from langchain_core.tools import tool
 from pinecone import Pinecone
-from langchain_openai import AzureOpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 
-pc = Pinecone(api_key=os.getenv("PINECONE_KEY"), ssl_verify=False)
+pc = Pinecone()
 
 index_name = "wiki-movies"
 index = pc.Index(index_name)
@@ -21,15 +19,10 @@ def search_movies_using_vector(query: str) -> str:
     Returns:
         Any: The embedded vector representation of the query.
     """
-    params = {
-        "azure_endpoint": os.getenv("AZURE_ENDPOINT"),
-        "azure_deployment": os.getenv("AZURE_EMBED_DEPLOYMENT"),
-        "api_version": os.getenv("EMBED_API_VERSION"),
-        "api_key": os.getenv("AZURE_API_KEY"),
-        "timeout": 60,
-        "http_client": httpx.Client(verify=False),
-    }
-    client = AzureOpenAIEmbeddings(**params)
+    client = OpenAIEmbeddings(
+        model="text-embedding-ada-002",
+        api_version="2024-10-21"
+    )
     embeddings = client.embed_query(query)
     results = index.query(
         vector=embeddings,

@@ -3,7 +3,7 @@ from typing_extensions import TypedDict, Annotated
 from langgraph.graph.message import add_messages
 from langgraph.graph import StateGraph, START, END
 from langchain_core.messages import AnyMessage, RemoveMessage
-from langchain_openai import AzureChatOpenAI
+from langchain_openai import ChatOpenAI
 from langchain_core.runnables import RunnablePassthrough
 from langgraph.prebuilt import ToolNode, tools_condition
 from langchain_core.prompts import PromptTemplate
@@ -55,7 +55,9 @@ def chatbot(state: State) -> str:
         "api_key": os.getenv("AZURE_API_KEY"),
         "timeout": 60,
     }
-    model = AzureChatOpenAI(**params)
+    model = ChatOpenAI(
+        model="gpt-4.1-mini"
+    )
     model_with_tools = model.bind_tools(tools)
     chain = {"query": RunnablePassthrough()} | prompt | model_with_tools
     
@@ -65,11 +67,9 @@ def chatbot(state: State) -> str:
 
 builder = StateGraph(State)
 
-builder.add_node('clean_messages', clean_messages)
 builder.add_node('chatbot', chatbot)
 builder.add_node("tools", ToolNode(tools))
-builder.add_edge(START, 'clean_messages')
-builder.add_edge("clean_messages", "chatbot")
+builder.add_edge(START, 'chatbot')
 builder.add_conditional_edges(
     "chatbot",
     tools_condition,
