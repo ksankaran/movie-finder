@@ -11,7 +11,7 @@ disable_warnings(InsecureRequestWarning)
 
 script_dir = Path(__file__).resolve().parent
 
-pc = Pinecone(api_key=os.getenv("PINECONE_KEY"), ssl_verify=False)
+pc = Pinecone()
 index_name = "wiki-movies"
 
 if not pc.has_index(index_name):
