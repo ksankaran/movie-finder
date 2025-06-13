@@ -1,6 +1,5 @@
 from collections.abc import AsyncIterable
 from typing import Any
-from langchain_core.messages import AIMessage, ToolMessage
 from graph import graph
 
 class MovieFinderAgent:
@@ -28,27 +27,7 @@ class MovieFinderAgent:
         async for item in self.graph.astream(inputs, config, stream_mode='values'):
             message = item['messages'][-1]
             print(f"Message: {message}")
-            if (
-                isinstance(message, AIMessage)
-                and message.tool_calls
-                and len(message.tool_calls) > 0
-            ):
-                yield {
-                    'is_task_complete': False,
-                    'require_user_input': False,
-                    'content': 'Invoking tool...',
-                }
-            elif isinstance(message, ToolMessage):
-                print(f"Tool response: {message.content}")
-                yield {
-                    'is_task_complete': False,
-                    'require_user_input': False,
-                    'content': 'Processing the tool response..',
-                }
-            else:
-                print(f"Instance of message: {type(message)}")
-                print(f"Instance of AImessage: {isinstance(message, AIMessage)}")
-                print(f"Unidentified Message: {message.content}")
+            if message.content:
                 final_message = message.content
                 yield {
                     'is_task_complete': False,

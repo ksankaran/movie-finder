@@ -7,6 +7,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.runnables import RunnablePassthrough
 from langgraph.prebuilt import ToolNode, tools_condition
 from langchain_core.prompts import PromptTemplate
+from langgraph.checkpoint.memory import InMemorySaver
 from tools import search_movies_using_vector
 
 tools = [
@@ -77,4 +78,6 @@ builder.add_conditional_edges(
 builder.add_edge("tools", "chatbot")
 builder.add_edge('chatbot', END)
 
-graph = builder.compile()
+checkpointer = InMemorySaver()
+
+graph = builder.compile(checkpointer=checkpointer)

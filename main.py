@@ -17,23 +17,19 @@ def app(host: str = None, port: int = None) -> A2AStarletteApplication:
     url = f"http://{host}:{port}"
     capabilities = AgentCapabilities(streaming=True, pushNotifications=False)
     skill = AgentSkill(
-        id='get_weather_forecast',
-        name='Get Weather Forecast',
-        description='Provides weather forecast for a given latitude and longitude.',
-        tags=['weather', 'forecast'],
+        id='movie_finder_agent',
+        name='Find Movies using scene descriptions',
+        description='Search movies using vector embeddings based on scene descriptions.',
+        tags=['movie', 'search', 'vector', 'embeddings'],
         examples=[
-            'get weather forecast for 37.7749,-122.4194',
-            'what is the weather in New York City?',
-            'forecast for 34.0522,-118.2437',
-            'weather in London',
-            'tell me the weather in Tokyo',
-            'what is the weather like in Paris?',
-            'give me the weather forecast for 51.5074,-0.1278',
+            'Find movies with a hero named Matrix who worked in the army.',
+            'Search for movies where the hero is a soldier named Matrix.',
+            'blue tiny creature with a red hat and a yellow shirt',
         ],
     )
     agent_card = AgentCard(
-        name='Weather Agent',
-        description='An agent that provides weather forecasts based on latitude and longitude.',
+        name='Movie Finder Agent',
+        description='An agent that helps find movies based on scene descriptions using vector embeddings.',
         url=url,
         version='1.0.0',
         defaultInputModes=MovieFinderAgent.SUPPORTED_CONTENT_TYPES,
@@ -43,9 +39,10 @@ def app(host: str = None, port: int = None) -> A2AStarletteApplication:
     )
 
     httpx_client = httpx.AsyncClient()
+    task_store = InMemoryTaskStore()
     request_handler = DefaultRequestHandler(
         agent_executor=MovieFinderAgentExecutor(),
-        task_store=InMemoryTaskStore(),
+        task_store=task_store,
         push_notifier=InMemoryPushNotifier(httpx_client),
     )
     server = A2AStarletteApplication(
