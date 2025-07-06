@@ -32,5 +32,5 @@ def search_movies_using_vector(query: str) -> str:
     )
     output = []
     for match in results.matches:
-        output.append(f"Score: {match.score}, Movie Name: {match.metadata["name"]}, URL: {match.metadata["url"]}, PLOT: {match.metadata["plot"]}")
+        output.append(f"Score: {match.score}, Movie Name: {match.metadata['name']}, URL: {match.metadata['url']}, PLOT: {match.metadata['plot']}")
     return "\n".join(output) if output else "No results found."
